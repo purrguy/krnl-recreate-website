@@ -6,6 +6,7 @@ const more = $("more");
 let query = "universal";
 let page = 1;
 let loading = false;
+let source = "all";
 
 function el(tag, cls, text) {
   const e = document.createElement(tag);
@@ -34,6 +35,8 @@ function card(s) {
   const titleBox = el("div");
   titleBox.appendChild(el("h3", null, s.title));
   const meta = el("div", "card-meta");
+  if (s.origin === "rscripts") meta.appendChild(el("span", "tag src-rs", "RScripts"));
+  else if (s.origin === "scriptblox") meta.appendChild(el("span", "tag src-sb", "ScriptBlox"));
   meta.appendChild(el("span", null, s.game || "Universal"));
   if (s.verified) meta.appendChild(el("span", "tag", "verified"));
   if (s.keyless) meta.appendChild(el("span", "tag", "keyless"));
@@ -44,7 +47,7 @@ function card(s) {
 
   const stats = el("div", "card-stats");
   stats.appendChild(el("span", null, stat(s.views) + " views"));
-  stats.appendChild(el("span", null, stat(s.executes) + " runs"));
+  stats.appendChild(el("span", null, stat(s.runs) + " runs"));
   stats.appendChild(el("span", null, stat(s.likes) + " likes"));
   c.appendChild(stats);
 
@@ -64,7 +67,7 @@ function card(s) {
   actions.appendChild(copy);
 
   const src = el("a", "btn small", "Source");
-  src.href = "/hot-scripts/raw?id=" + encodeURIComponent(s.id);
+  src.href = `/hot-scripts/raw?src=${s.origin === "rscripts" ? "rs" : "sb"}&id=${encodeURIComponent(s.id)}`;
   src.target = "_blank";
   src.rel = "noopener";
   actions.appendChild(src);
@@ -83,7 +86,7 @@ async function load(reset) {
   }
 
   try {
-    const r = await fetch(`/hot-scripts/raw?q=${encodeURIComponent(query)}&page=${page}&max=12`);
+    const r = await fetch(`/hot-scripts/raw?src=${source}&q=${encodeURIComponent(query)}&page=${page}&max=12`);
     const j = await r.json();
     const list = j.scripts || [];
 
@@ -114,5 +117,14 @@ more.addEventListener("click", () => {
   load(false);
 });
 
+for (const tab of document.querySelectorAll(".tab")) {
+  tab.addEventListener("click", () => {
+    source = tab.dataset.src;
+    for (const t of document.querySelectorAll(".tab")) t.classList.toggle("on", t === tab);
+    load(true);
+  });
+}
+
 $("year").textContent = new Date().getFullYear();
 load(true);
+

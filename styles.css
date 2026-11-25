@@ -96,3 +96,10 @@ footer{
 .card-stats{display:flex;gap:12px;color:var(--muted);font-size:12px}
 .card-actions{display:flex;gap:8px;margin-top:auto}
 .btn.small{padding:8px 12px;font-size:12.5px}
+
+.tabs{display:flex;gap:6px;margin:0 0 18px;flex-wrap:wrap}
+.tab{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:7px 14px;font:600 12px/1 ui-monospace,monospace;letter-spacing:.06em;cursor:pointer}
+.tab:hover{border-color:#3a3a3a;color:var(--text)}
+.tab.on{background:#f2f2f2;border-color:#f2f2f2;color:#0a0a0a}
+.tag.src-sb{color:#7dd3fc;border-color:#1e3a4a}
+.tag.src-rs{color:#c4b5fd;border-color:#33254a}
