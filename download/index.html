@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Download — KRNL</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/assets/krnl.png" type="image/png">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="/"><img src="/assets/krnl.png" width="44" height="44" alt=""><span>KRNL</span></a>
+  <nav><a href="/">Home</a><a href="/discord">Discord</a></nav>
+</header>
+
+<main class="hero">
+  <img class="mark" src="/assets/krnl.png" width="96" height="96" alt="">
+  <h1>Download</h1>
+  <p>Extract the zip and run <code>krnl.exe</code>. Check the hash before running it.</p>
+
+  <div class="cta">
+    <a class="btn primary" id="dl" href="/api/latest.json">
+      <span id="dl-label">Download</span>
+      <span class="ver" id="dl-ver">—</span>
+    </a>
+    <a class="btn" href="/#changelog">Changelog</a>
+  </div>
+
+  <p class="meta">
+    <span id="status">development</span>
+    <span>·</span>
+    <span id="size">—</span>
+    <span>·</span>
+    <button id="sha">sha256 —</button>
+  </p>
+
+  <section class="block" style="text-align:left">
+    <h2>Requirements</h2>
+    <ul class="plain">
+      <li>Windows 10 or 11, 64-bit</li>
+      <li>Roblox installed from the official launcher</li>
+      <li>No key, no account</li>
+    </ul>
+  </section>
+
+  <section class="block" style="text-align:left">
+    <h2>If Windows blocks it</h2>
+    <p class="muted">Unsigned dev builds get flagged. Confirm the SHA-256 above, then allow the file. Release builds will be signed.</p>
+  </section>
+</main>
+
+<footer>
+  <span>© <span id="year"></span> purrguy</span>
+  <span>Not affiliated with Roblox Corporation.</span>
+</footer>
+
+<script src="/app.js" defer></script>
+</body>
+</html>

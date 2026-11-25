@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KRNL — Roblox script executor</title>
+<meta name="description" content="KRNL runs Luau inside Roblox on Windows.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="/assets/krnl.png" type="image/png">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<header class="nav">
+  <a class="brand" href="/">
+    <img src="/assets/krnl.png" width="44" height="44" alt="">
+    <span>KRNL</span>
+  </a>
+  <nav>
+    <a href="#download">Download</a>
+    <a href="#changelog">Changelog</a>
+    <a href="#faq">FAQ</a>
+    <a href="/discord">Discord</a>
+  </nav>
+</header>
+
+<main>
+
+  <section class="hero">
+    <img class="mark" src="/assets/krnl.png" width="128" height="128" alt="KRNL">
+    <h1>KRNL</h1>
+    <p>Roblox script executor for Windows. Paste a script, press execute.</p>
+
+    <div class="cta" id="download">
+      <a class="btn primary" id="dl" href="/download/">
+        <span id="dl-label">Download</span>
+        <span class="ver" id="dl-ver">v0.1.0</span>
+      </a>
+      <a class="btn" href="#changelog">Changelog</a>
+    </div>
+
+    <p class="meta">
+      <span id="status">development</span>
+      <span>·</span>
+      <span id="size">—</span>
+      <span>·</span>
+      <button id="sha" title="Copy SHA-256">sha256 —</button>
+    </p>
+  </section>
+
+  <section class="block">
+    <h2>What it does</h2>
+    <ul class="plain">
+      <li>Attaches to the Roblox client on Windows.</li>
+      <li>Runs Luau on the game's own VM, not an emulator.</li>
+      <li>Keeps one script window open, with tabs and saved scripts.</li>
+    </ul>
+  </section>
+
+  <section class="block" id="changelog">
+    <h2>Changelog</h2>
+    <div class="log">
+      <div class="log-head"><b>0.1.0</b><span>current</span></div>
+      <ul id="notes">
+        <li>Development build. Studio path works end to end; client support in progress.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block" id="faq">
+    <h2>FAQ</h2>
+    <details>
+      <summary>Is it free?</summary>
+      <p>Yes. No key system.</p>
+    </details>
+    <details>
+      <summary>Does it work on the live client?</summary>
+      <p>Not yet. The current build is validated against Studio while client support is finished. The download page always shows the current stage.</p>
+    </details>
+    <details>
+      <summary>Antivirus flags it</summary>
+      <p>Anything that attaches to another process looks like an injector. Check the SHA-256 above against the file you downloaded.</p>
+    </details>
+    <details>
+      <summary>Something breaks</summary>
+      <p>Post the script and the console output in Discord.</p>
+    </details>
+  </section>
+
+  <section class="block">
+    <h2>Download</h2>
+    <p class="muted">Windows 10 or 11, x64. Extract the zip and run <code>krnl.exe</code>.</p>
+    <a class="btn primary" id="dl2" href="/download/">Download</a>
+  </section>
+
+</main>
+
+<footer>
+  <span>© <span id="year"></span> purrguy</span>
+  <span>Not affiliated with Roblox Corporation.</span>
+</footer>
+
+<script src="/app.js" defer></script>
+</body>
+</html>
