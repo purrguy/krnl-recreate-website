@@ -22,7 +22,7 @@
 <main class="block" style="margin-top:36px">
   <h2>Obfuscate</h2>
   <p class="muted" style="margin-top:-8px">
-    Protect a script before publishing it. Anyone running KRNL can execute the output; nobody needs the password.
+    Protect a script before publishing it. Anyone running KRNL executes the output as-is.
   </p>
 
   <div class="obf">
@@ -32,11 +32,14 @@
     </div>
 
     <div class="pane">
-      <label for="pass">Script password</label>
-      <input id="pass" type="password" autocomplete="new-password" placeholder="keep this private">
-
-      <label for="out" style="margin-top:14px">Output</label>
+      <label for="out">Output</label>
       <textarea id="out" spellcheck="false" readonly placeholder="krnl.SECURE_RUN(...)"></textarea>
+
+      <label style="margin-top:14px">Key</label>
+      <p class="muted" style="margin:0;font-size:12.5px">
+        A random 64-byte key is generated for every script and carried inside
+        the output. Nobody types a password.
+      </p>
     </div>
   </div>
 
@@ -54,9 +57,10 @@
 
 <footer>
   <span>© <span id="year"></span> purrguy</span>
-  <span>Keep the password; the output cannot be regenerated without it.</span>
+  <span>One random key per script, generated locally in your browser.</span>
 </footer>
 
 <script src="/encrypt.js" defer></script>
 </body>
 </html>
+

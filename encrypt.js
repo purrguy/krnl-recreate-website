@@ -40,18 +40,8 @@ function xorKey(data, keyBytes) {
   return out;
 }
 
-async function derive(password, salt) {
-  const base = await crypto.subtle.importKey(
-    "raw", te.encode(password), "PBKDF2", false, ["deriveBits"]
-  );
-  const bits = await crypto.subtle.deriveBits(
-    { name: "PBKDF2", salt, iterations: 512, hash: "SHA-256" }, base, 512
-  );
-  const dk = new Uint8Array(bits);
-  return {
-    enc: await crypto.subtle.importKey("raw", dk.slice(0, 32), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]),
-    mac: await crypto.subtle.importKey("raw", dk.slice(32), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]),
-  };
+async function hmacKey(raw) {
+  return crypto.subtle.importKey("raw", raw, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
 }
 
 async function hmac(key, data) {
@@ -121,13 +111,15 @@ function scramble(src) {
   return out;
 }
 
-async function encrypt(source, password, doScramble) {
+async function encrypt(source, doScramble) {
   const text = doScramble ? scramble(source) : source;
   const data = te.encode(text);
 
-  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const key = crypto.getRandomValues(new Uint8Array(64));
   const nonce = crypto.getRandomValues(new Uint8Array(16));
-  const { enc, mac } = await derive(password, salt);
+
+  const enc = await hmacKey(key.slice(0, 32));
+  const mac = await hmacKey(key.slice(32, 64));
 
   const blocks = Math.ceil(data.length / 32) || 1;
   const ks = new Uint8Array(blocks * 32);
@@ -139,32 +131,26 @@ async function encrypt(source, password, doScramble) {
   for (let i = 0; i < data.length; i++) ct[i] = data[i] ^ ks[i];
 
   const tag = (await hmac(mac, concat(nonce, ct))).slice(0, 16);
-  const obf = xorKey(te.encode(password), te.encode(DEFAULT_KEY));
-  if (obf.length > 255) throw new Error("password too long");
+  const obf = xorKey(key, te.encode(DEFAULT_KEY));
 
   const blob = concat(
-    new Uint8Array([2]), salt, nonce, tag, be32(data.length),
+    new Uint8Array([3]), nonce, tag, be32(data.length),
     new Uint8Array([obf.length]), obf, ct
   );
 
-  return "KRNL2:" + b85(blob);
+  return "KRNL3:" + b85(blob);
 }
 
 async function run() {
   const src = $("src").value;
-  const pass = $("pass").value;
   if (!src) return;
-  if (!pass) {
-    $("stats").textContent = "Set a password first.";
-    return;
-  }
 
   $("go").disabled = true;
   $("stats").textContent = "Working...";
 
   try {
     const doScramble = $("scramble").checked;
-    const payload = await encrypt(src, pass, doScramble);
+    const payload = await encrypt(src, doScramble);
     $("out").value = `krnl.SECURE_RUN("${payload}")`;
     $("copy").disabled = false;
     $("stats").textContent = `${src.length} bytes -> ${payload.length} chars`;
