@@ -1,0 +1,115 @@
+const B85 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~";
+const DEFAULT_KEY = "krnl.v1.7f3a9c2e5b8d4a16";
+
+const $ = (id) => document.getElementById(id);
+const te = new TextEncoder();
+
+function b85(data) {
+  let out = "";
+  for (let i = 0; i < data.length; i += 4) {
+    const chunk = [data[i] || 0, data[i + 1] || 0, data[i + 2] || 0, data[i + 3] || 0];
+    let n = ((chunk[0] << 24) | (chunk[1] << 16) | (chunk[2] << 8) | chunk[3]) >>> 0;
+    let s = "";
+    for (let k = 0; k < 5; k++) {
+      s = B85[n % 85] + s;
+      n = Math.floor(n / 85);
+    }
+    out += s;
+  }
+  return out;
+}
+
+function be32(n) {
+  return new Uint8Array([(n >>> 24) & 255, (n >>> 16) & 255, (n >>> 8) & 255, n & 255]);
+}
+
+function concat(...arrs) {
+  const len = arrs.reduce((a, b) => a + b.length, 0);
+  const out = new Uint8Array(len);
+  let at = 0;
+  for (const a of arrs) {
+    out.set(a, at);
+    at += a.length;
+  }
+  return out;
+}
+
+async function derive(password, salt) {
+  const base = await crypto.subtle.importKey(
+    "raw", te.encode(password), "PBKDF2", false, ["deriveBits"]
+  );
+  const bits = await crypto.subtle.deriveBits(
+    { name: "PBKDF2", salt, iterations: 512, hash: "SHA-256" }, base, 512
+  );
+  const dk = new Uint8Array(bits);
+  return {
+    enc: await crypto.subtle.importKey("raw", dk.slice(0, 32), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]),
+    mac: await crypto.subtle.importKey("raw", dk.slice(32), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]),
+  };
+}
+
+async function hmac(key, data) {
+  return new Uint8Array(await crypto.subtle.sign("HMAC", key, data));
+}
+
+async function encrypt(source, password) {
+  const data = te.encode(source);
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const nonce = crypto.getRandomValues(new Uint8Array(16));
+  const { enc, mac } = await derive(password, salt);
+
+  const blocks = Math.ceil(data.length / 32) || 1;
+  const ks = new Uint8Array(blocks * 32);
+  for (let i = 0; i < blocks; i++) {
+    ks.set(await hmac(enc, concat(nonce, be32(i))), i * 32);
+  }
+
+  const ct = new Uint8Array(data.length);
+  for (let i = 0; i < data.length; i++) ct[i] = data[i] ^ ks[i];
+
+  const tag = (await hmac(mac, concat(nonce, ct))).slice(0, 16);
+  const len = be32(data.length);
+  const blob = concat(new Uint8Array([1]), salt, nonce, tag, len, ct);
+
+  return "KRNL1:" + b85(blob);
+}
+
+async function run() {
+  const src = $("src").value;
+  const useKey = $("keymode").checked;
+  const pass = $("pass").value;
+
+  if (!src) return;
+  if (!useKey && !pass) {
+    $("stats").textContent = "Password required.";
+    return;
+  }
+
+  $("go").disabled = true;
+  $("stats").textContent = "Encrypting...";
+
+  try {
+    const key = useKey ? DEFAULT_KEY : pass;
+    const payload = await encrypt(src, key);
+    const call = useKey
+      ? `krnl.SECURE_RUN("${payload}")`
+      : `krnl.SECURE_RUN("${payload}", ${JSON.stringify(pass)})`;
+    $("out").value = call;
+    $("copy").disabled = false;
+    $("stats").textContent =
+      `${src.length} bytes -> ${payload.length} chars`;
+  } catch (e) {
+    $("stats").textContent = "Failed: " + e.message;
+  } finally {
+    $("go").disabled = false;
+  }
+}
+
+$("go").addEventListener("click", run);
+$("copy").addEventListener("click", async () => {
+  await navigator.clipboard.writeText($("out").value);
+  $("copy").textContent = "Copied";
+  setTimeout(() => ($("copy").textContent = "Copy"), 1200);
+});
+
+$("year").textContent = new Date().getFullYear();

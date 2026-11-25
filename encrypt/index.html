@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Obfuscate — KRNL</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/assets/krnl.png" type="image/png">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<header class="nav">
+  <a class="brand" href="/"><img src="/assets/krnl.png" width="44" height="44" alt=""><span>KRNL</span></a>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/hot-scripts/">Scripts</a>
+    <a href="/discord">Discord</a>
+  </nav>
+</header>
+
+<main class="block" style="margin-top:36px">
+  <h2>Obfuscate</h2>
+  <p class="muted" style="margin-top:-8px">
+    Encrypts a script for <code>krnl.SECURE_RUN</code>. The output runs only with the same password.
+  </p>
+
+  <div class="obf">
+    <div class="pane">
+      <label for="src">Script</label>
+      <textarea id="src" spellcheck="false" placeholder="print('hello')"></textarea>
+    </div>
+
+    <div class="pane">
+      <label for="pass">Password</label>
+      <input id="pass" type="password" autocomplete="new-password" placeholder="something long">
+
+      <label for="out" style="margin-top:14px">Output</label>
+      <textarea id="out" spellcheck="false" readonly placeholder="krnl.SECURE_RUN(...)"></textarea>
+    </div>
+  </div>
+
+  <div class="obf-actions">
+    <button class="btn primary" id="go">Encrypt</button>
+    <button class="btn" id="copy" disabled>Copy</button>
+    <label class="check"><input type="checkbox" id="keymode" checked> executor key (no password in output)</label>
+    <span class="muted" id="stats"></span>
+  </div>
+
+  <section class="block" style="padding:0;margin-top:40px">
+    <h2>Format</h2>
+    <ul class="plain">
+      <li>PBKDF2-HMAC-SHA256, 512 rounds, 64-byte key</li>
+      <li>HMAC-SHA256 counter keystream, 16-byte nonce</li>
+      <li>HMAC-SHA256 tag over nonce + ciphertext</li>
+      <li>base85 container, version byte, length-prefixed</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  <span>© <span id="year"></span> purrguy</span>
+  <span>No recovery if you lose the password.</span>
+</footer>
+
+<script src="/encrypt.js" defer></script>
+</body>
+</html>
