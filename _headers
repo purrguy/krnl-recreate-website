@@ -3,7 +3,7 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: default-src 'self'; img-src 'self' data: https://scriptblox.com; style-src 'self'; script-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'
+  Content-Security-Policy: default-src 'self'; img-src 'self' data: https://scriptblox.com https://rscripts.net https://*.rbxcdn.com https://*.roblox.com; style-src 'self'; script-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'
 
 /api/*
   Cache-Control: no-store
