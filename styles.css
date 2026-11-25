@@ -80,3 +80,19 @@ footer{
   .mark{width:96px;height:96px}
   h1{letter-spacing:.18em}
 }
+
+/* hot scripts */
+.search{display:flex;gap:8px;margin:0 0 18px}
+.search input{flex:1;background:#0f0f0f;border:1px solid var(--line);border-radius:8px;padding:11px 14px;color:var(--text);font:inherit}
+.search input:focus{outline:none;border-color:#3a3a3a}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.card{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:14px;display:flex;flex-direction:column;gap:10px}
+.card-head{display:flex;gap:10px;align-items:flex-start}
+.thumb{width:44px;height:44px;border-radius:6px;object-fit:cover;background:#1a1a1a}
+.card h3{margin:0;font-size:14.5px;line-height:1.35;font-weight:600}
+.card-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;color:var(--muted);font-size:12px;align-items:center}
+.tag{font:600 10px/1.4 ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:2px 6px}
+.tag.bad{color:#f87171;border-color:#3a1f1f}
+.card-stats{display:flex;gap:12px;color:var(--muted);font-size:12px}
+.card-actions{display:flex;gap:8px;margin-top:auto}
+.btn.small{padding:8px 12px;font-size:12.5px}

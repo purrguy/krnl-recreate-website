@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hot scripts — KRNL</title>
+<meta name="description" content="Popular Roblox scripts, served through KRNL.">
+<link rel="icon" href="/assets/krnl.png" type="image/png">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<header class="nav">
+  <a class="brand" href="/"><img src="/assets/krnl.png" width="44" height="44" alt=""><span>KRNL</span></a>
+  <nav>
+    <a href="/#download">Download</a>
+    <a href="/hot-scripts">Scripts</a>
+    <a href="/#faq">FAQ</a>
+    <a href="/discord">Discord</a>
+  </nav>
+</header>
+
+<main class="block" style="margin-top:40px">
+  <h2>Hot scripts</h2>
+
+  <form id="search" class="search">
+    <input id="q" type="search" placeholder="Search scripts or games" autocomplete="off">
+    <button class="btn primary" type="submit">Search</button>
+  </form>
+
+  <p class="muted" id="hint">Loading…</p>
+
+  <div id="grid" class="cards"></div>
+
+  <div style="display:flex;justify-content:center;margin-top:24px">
+    <button class="btn" id="more" hidden>Load more</button>
+  </div>
+</main>
+
+<footer>
+  <span>© <span id="year"></span> purrguy</span>
+  <span>Not affiliated with Roblox Corporation. Scripts are provided by their authors.</span>
+</footer>
+
+<script src="/hot-scripts.js" defer></script>
+</body>
+</html>
