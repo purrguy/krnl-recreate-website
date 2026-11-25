@@ -41,15 +41,35 @@ The site and the updater both read that one JSON.
 
 ## Where files live
 
-**v1 (now):** the Pages project. Limit is 25 MiB per file / 20,000 files — enough for the loader and payload. Free, CDN-cached, no egress bill.
+**v1 (now): work.ink.** Upload the release archive there, use the public link as
+`url` in `functions/api/latest.json.js`. Monetized and outside GitHub's reach.
 
-**v2:** Cloudflare R2 + a Worker. R2 is not enabled on this account yet; enable it in the dashboard (it asks for a billing method even on the free tier). Then:
+Archive contents:
+
+```
+krnl-<version>.zip
+  krnl.exe
+  README.txt
+```
+
+Never include `krnl.pfx`, the test certificate, or any signing material.
+
+SHA-256 for the manifest:
+
+```
+certutil -hashfile krnl-<version>.zip SHA256
+```
+
+**v2:** Cloudflare R2 + a Worker if you want first-party hosting or signed URLs.
+R2 is not enabled on this account yet; enable it in the dashboard (it asks for a
+billing method even on the free tier). Then:
 
 ```
 npx wrangler r2 bucket create krnl-downloads
 ```
 
-Bind the bucket to a Worker on `dl.krnl.purrguy.me`, stream with `Range` support, and change `url` in the manifest. Same origin from the client's point of view.
+Bind the bucket to a Worker on `dl.krnl.purrguy.me`, stream with `Range` support,
+and change `url` in the manifest. Same origin from the client's point of view.
 
 Why not GitHub Releases: DMCA/abuse reports against executor binaries are routine there; Pages/R2 buckets are yours and can be swapped without losing the repo.
 
